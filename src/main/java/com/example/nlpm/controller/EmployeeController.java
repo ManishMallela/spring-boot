@@ -1,11 +1,10 @@
-
 package com.example.nlpm.controller;
 
-import com.example.nlpm.entity.Employee;
+import com.example.nlpm.dto.request.EmployeeRequest;
+import com.example.nlpm.dto.response.EmployeeResponse;
 import com.example.nlpm.service.impl.EmployeeService;
-
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,35 +19,24 @@ public class EmployeeController {
         this.employeeService = employeeService;
     }
 
-    // Save employee
     @PostMapping
-    public ResponseEntity<Employee> saveEmployee(
-            @RequestBody Employee employee) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public EmployeeResponse saveEmployee(
+            @Valid @RequestBody EmployeeRequest request) {
 
-        Employee savedEmployee =
-                employeeService.saveEmployee(employee);
-
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(savedEmployee);
+        return employeeService.saveEmployee(request);
     }
 
-    // Get all employees
     @GetMapping
-    public ResponseEntity<List<Employee>> getAllEmployees() {
+    public List<EmployeeResponse> getAllEmployees() {
 
-        return ResponseEntity.ok(
-                employeeService.getAllEmployees()
-        );
+        return employeeService.getAllEmployees();
     }
 
-    // Get employee by ID
     @GetMapping("/{id}")
-    public ResponseEntity<Employee> getEmployeeById(
+    public EmployeeResponse getEmployeeById(
             @PathVariable Long id) {
 
-        return employeeService.getEmployeeById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        return employeeService.getEmployeeById(id);
     }
 }
